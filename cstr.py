@@ -551,10 +551,10 @@ def run_random_agent():
     plt.show()
 def train_sac():
 
-    # 1. 创建 CSTR 环境
+    # 1. Create the CSTR environment
     env = CSTREnv()
 
-    # 2. 创建 SAC agent
+    # 2. Create the SAC agent
     from stable_baselines3 import SAC
 
     model = SAC(
@@ -563,12 +563,12 @@ def train_sac():
         verbose=1
     )
 
-    # 3. 开始训练
+    # 3. Start training
     model.learn(
         total_timesteps=50_000
     )
 
-    # 4. 保存训练后的模型
+    # 4. Save the trained model
     model.save("sac_cstr")
 
     print("Training finished.")
@@ -578,7 +578,7 @@ def test_sac():
 
     env = CSTREnv()
 
-    # 读取刚才训练好的模型
+    # Load the model trained above
     model = SAC.load(
         "sac_cstr",
         env=env
@@ -590,7 +590,7 @@ def test_sac():
 
     for step in range(env.max_steps):
 
-        # SAC 根据当前 state 决定 action
+        # SAC picks an action from the current state
         action, _ = model.predict(
             state,
             deterministic=True
@@ -623,16 +623,16 @@ def test_sac():
     from stable_baselines3 import SAC
     import matplotlib.pyplot as plt
 
-    # 创建环境
+    # Create the environment
     env = CSTREnv()
 
-    # 加载训练好的 SAC
+    # Load the trained SAC model
     model = SAC.load("sac_cstr", env=env)
 
-    # 初始化 CSTR
+    # Reset the CSTR
     state, info = env.reset(seed=42)
 
-    # 用来存数据
+    # Buffers for logging data
     times = []
     CA_history = []
     CB_history = []
@@ -645,7 +645,7 @@ def test_sac():
     for step in range(env.max_steps):
 
         # ============================
-        # SAC 根据 state 选择 action
+        # SAC chooses an action from the state
         # ============================
 
         action, _ = model.predict(
@@ -653,12 +653,12 @@ def test_sac():
             deterministic=True
         )
 
-        # 把 action 施加给 CSTR
+        # Apply the action to the CSTR
         state, reward, terminated, truncated, info = env.step(action)
 
         CA, CB, T = state
 
-        # 保存数据
+        # Save data
         times.append(step * env.dt)
         CA_history.append(CA)
         CB_history.append(CB)
