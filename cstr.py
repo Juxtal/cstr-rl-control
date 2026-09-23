@@ -5,10 +5,6 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 import matplotlib.pyplot as plt
-import gymnasium as gym
-from gymnasium import spaces
-import numpy as np
-import matplotlib.pyplot as plt
 
 
 class CSTREnv(gym.Env):
@@ -549,6 +545,8 @@ def run_random_agent():
     plt.grid()
 
     plt.show()
+
+
 def train_sac():
 
     # 1. Create the CSTR environment
@@ -572,52 +570,8 @@ def train_sac():
     model.save("sac_cstr")
 
     print("Training finished.")
-def test_sac():
 
-    from stable_baselines3 import SAC
 
-    env = CSTREnv()
-
-    # Load the model trained above
-    model = SAC.load(
-        "sac_cstr",
-        env=env
-    )
-
-    state, info = env.reset(seed=42)
-
-    total_reward = 0.0
-
-    for step in range(env.max_steps):
-
-        # SAC picks an action from the current state
-        action, _ = model.predict(
-            state,
-            deterministic=True
-        )
-
-        state, reward, terminated, truncated, info = env.step(
-            action
-        )
-
-        CA, CB, T = state
-
-        total_reward += reward
-
-        if step % 20 == 0:
-            print(
-                f"step={step:3d} | "
-                f"CA={CA:.3f} | "
-                f"CB={CB:.3f} | "
-                f"T={T:.2f} | "
-                f"Tc={info['Tc']:.2f} | "
-                f"reward={reward:.4f}"
-            )
-
-        if terminated or truncated:
-            break
-
-    print("Total reward:", total_reward)
 def test_sac():
 
     from stable_baselines3 import SAC
